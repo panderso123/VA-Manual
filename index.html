@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VA Operations Manual — How to Move Every Project Forward with Claude</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --muted:#5c5c5c; --line:#e3e0d8; --bg:#faf8f3;
+    --gold:#b8893b; --gold-soft:#f3e7d0; --dark:#23211c; --accent:#2f6f6a;
+    --code-bg:#1f1d1a; --code-ink:#f4efe6; --warn-bg:#fbf0e6; --warn-line:#e0a96d;
+    --ok-bg:#eaf3ec; --ok-line:#6aa17a;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6;font-size:17px}
+  header.hero{background:linear-gradient(135deg,var(--dark),#3a352c);color:#fff;padding:48px 24px 40px}
+  header.hero .wrap{max-width:880px;margin:0 auto}
+  header.hero h1{margin:0 0 8px;font-size:2rem;letter-spacing:-.01em}
+  header.hero p{margin:6px 0;color:#e9e2d2}
+  .tag{display:inline-block;background:var(--gold);color:#fff;font-size:.72rem;font-weight:700;
+    letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:20px;margin-bottom:14px}
+  .layout{max-width:880px;margin:0 auto;padding:0 24px 80px}
+  nav.toc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 26px;margin:32px 0;
+    box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  nav.toc h2{margin:0 0 12px;font-size:1rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  nav.toc ol{margin:0;padding-left:22px;columns:2;column-gap:34px}
+  nav.toc li{margin:5px 0;break-inside:avoid}
+  nav.toc a{color:var(--accent);text-decoration:none}
+  nav.toc a:hover{text-decoration:underline}
+  section{margin:46px 0;scroll-margin-top:16px}
+  h2.sec{font-size:1.5rem;border-bottom:3px solid var(--gold-soft);padding-bottom:8px;margin-bottom:6px}
+  h3{font-size:1.18rem;margin-top:30px;color:var(--dark)}
+  h4{font-size:1.02rem;margin:20px 0 6px;color:var(--accent)}
+  .lead{color:var(--muted);font-size:1.02rem;margin-top:4px}
+  .pill{display:inline-block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+    padding:3px 9px;border-radius:6px;background:var(--gold-soft);color:#8a6324;margin-right:6px}
+  .pill.live{background:var(--ok-bg);color:#3f7350}
+  .pill.build{background:#eee9fb;color:#6a4fb0}
+  .pill.slow{background:#f3eee5;color:#8a7a55}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin:16px 0}
+  table{border-collapse:collapse;width:100%;margin:18px 0;font-size:.95rem;background:#fff;
+    border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--dark);color:#fff;font-size:.85rem;letter-spacing:.02em}
+  tr:last-child td{border-bottom:none}
+  .prompt{position:relative;background:var(--code-bg);color:var(--code-ink);border-radius:10px;
+    padding:18px 18px 18px;margin:14px 0;font-family:"SF Mono",Menlo,Consolas,monospace;font-size:.86rem;
+    line-height:1.55;white-space:pre-wrap;word-break:break-word}
+  .prompt .lbl{position:absolute;top:-11px;left:14px;background:var(--gold);color:#fff;font-size:.66rem;
+    font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:5px;
+    font-family:-apple-system,sans-serif}
+  .copybtn{position:absolute;top:10px;right:10px;background:#3a362f;color:#f4efe6;border:1px solid #555049;
+    border-radius:6px;font-size:.72rem;padding:5px 10px;cursor:pointer;font-family:-apple-system,sans-serif}
+  .copybtn:hover{background:#4a463d}
+  .copybtn.done{background:var(--ok-line);border-color:var(--ok-line);color:#fff}
+  .fill{color:#f0c987;font-weight:600}
+  .note,.warn,.ok{border-radius:10px;padding:14px 18px;margin:16px 0;font-size:.95rem}
+  .note{background:#eef2f6;border-left:4px solid #5b89b3}
+  .warn{background:var(--warn-bg);border-left:4px solid var(--warn-line)}
+  .ok{background:var(--ok-bg);border-left:4px solid var(--ok-line)}
+  .warn strong,.ok strong{display:block;margin-bottom:3px}
+  ol.steps{padding-left:20px}
+  ol.steps>li{margin:9px 0}
+  ul.tight{margin:8px 0;padding-left:20px}
+  ul.tight li{margin:4px 0}
+  .kbd{background:#fff;border:1px solid #cfcabd;border-bottom-width:2px;border-radius:5px;padding:1px 6px;
+    font-size:.82rem;font-family:monospace}
+  .back{font-size:.82rem;color:var(--muted);text-decoration:none;float:right;font-weight:600}
+  .back:hover{color:var(--accent)}
+  footer{text-align:center;color:var(--muted);font-size:.85rem;padding:30px 24px 60px}
+  @media(max-width:640px){nav.toc ol{columns:1}header.hero h1{font-size:1.55rem}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="tag">Internal — Virtual Assistant Playbook</div>
+    <h1>VA Operations Manual</h1>
+    <p>How to move every project forward using Claude (Max plan).</p>
+    <p style="font-size:.9rem;opacity:.8">Prepared for the VA · Owner: Peter Anderson · v1.0</p>
+  </div>
+</header>
+
+<div class="layout">
+
+<nav class="toc">
+  <h2>What's inside</h2>
+  <ol>
+    <li><a href="#how">How to use this manual</a></li>
+    <li><a href="#claude101">Claude 101 — the basics</a></li>
+    <li><a href="#promptformula">The prompt formula</a></li>
+    <li><a href="#golden">10 golden rules</a></li>
+    <li><a href="#businesses">The businesses at a glance</a></li>
+    <li><a href="#routine">Your daily &amp; weekly routine</a></li>
+    <li><a href="#cc">Project: Creative Conquest (video agency)</a></li>
+    <li><a href="#sidebush">Project: Sidebush Art (print-on-demand)</a></li>
+    <li><a href="#facebook">Project: The Facebook page &amp; ads</a></li>
+    <li><a href="#medspa">Project: Med Spa Content Engine</a></li>
+    <li><a href="#aimastery">Project: AI Mastery course</a></li>
+    <li><a href="#veterans">Project: AI Mastery for Veterans</a></li>
+    <li><a href="#outbound">Project: Outbound / lead-gen</a></li>
+    <li><a href="#library">Prompt library (quick copy)</a></li>
+    <li><a href="#guardrails">Guardrails — when to stop &amp; ask</a></li>
+    <li><a href="#glossary">Glossary</a></li>
+  </ol>
+</nav>
+
+<!-- ============ HOW TO USE ============ -->
+<section id="how">
+  <h2 class="sec">How to use this manual</h2>
+  <p class="lead">Read Sections 2–4 once. After that, jump straight to whatever project you're working on.</p>
+  <p>Every project section follows the same shape so it's easy to find your place:</p>
+  <ul class="tight">
+    <li><strong>What it is</strong> — one paragraph so you understand the goal.</li>
+    <li><strong>Your tasks</strong> — exactly what you own.</li>
+    <li><strong>Step-by-step</strong> — do these in order.</li>
+    <li><strong>Copy-paste prompts</strong> — dark boxes. Click <em>Copy</em>, paste into Claude, and replace anything shown in <span class="fill">orange brackets</span> with the real detail.</li>
+    <li><strong>Before it goes live</strong> — the approval gate. Nothing publishes, sends, or spends money until Peter says yes.</li>
+  </ul>
+  <div class="note"><strong>The single most important habit:</strong> When in doubt, draft it in Claude, then send it to Peter for a yes/no <em>before</em> it goes public. Drafting is always safe. Publishing and sending are not.</div>
+</section>
+
+<!-- ============ CLAUDE 101 ============ -->
+<section id="claude101">
+  <h2 class="sec">Claude 101 — the basics <a href="#how" class="back">↑ top</a></h2>
+  <p class="lead">Claude is an AI assistant. You talk to it like a smart, fast coworker. You'll be on the <strong>Max plan</strong>, which means generous usage and access to the best models — use it freely.</p>
+
+  <h3>Getting started in 60 seconds</h3>
+  <ol class="steps">
+    <li>Go to <strong>claude.ai</strong> and sign in with the account Peter gives you.</li>
+    <li>Click <strong>New chat</strong>.</li>
+    <li>Type or paste a prompt (an instruction), press <span class="kbd">Enter</span>.</li>
+    <li>Read the answer. If it's not quite right, just reply in the same chat and tell it what to change. You do <em>not</em> start over.</li>
+  </ol>
+
+  <h3>Four things that make Claude way more useful</h3>
+  <ul class="tight">
+    <li><strong>Attach files.</strong> Click the <strong>paperclip / +</strong> to upload an image, PDF, spreadsheet, or doc. Claude can read it. (Great for "rewrite this", "pull the key points from this PDF", "describe this product photo".)</li>
+    <li><strong>Keep one chat per task.</strong> Everything you say in a chat is "remembered" within that chat. Start a fresh chat when you switch to a different job so context doesn't get mixed up.</li>
+    <li><strong>Use Projects (left sidebar).</strong> A Project is a folder of chats that share background info. Peter may set up a Project per business so you don't have to re-explain the brand each time. If so, work inside the right Project.</li>
+    <li><strong>Iterate.</strong> The first answer is a draft, not the final. Say "make it shorter," "more casual," "give me 5 options," "now turn it into a caption." This back-and-forth is where the magic is.</li>
+  </ul>
+
+  <div class="ok"><strong>Good to know</strong>Claude can be wrong, especially about live facts, prices, dates, links, and anything it can't see. Always sanity-check names, numbers, and URLs before they go out. Treat Claude as a brilliant first-drafter, not a source of truth.</div>
+</section>
+
+<!-- ============ PROMPT FORMULA ============ -->
+<section id="promptformula">
+  <h2 class="sec">The prompt formula <a href="#how" class="back">↑ top</a></h2>
+  <p class="lead">A good prompt has five parts. You don't need all five every time, but the more you include, the better the result. Memorize this order:</p>
+
+  <table>
+    <tr><th>Part</th><th>What it means</th><th>Example</th></tr>
+    <tr><td><strong>1. Role</strong></td><td>Who Claude should act as</td><td>"You're a social media manager for a med spa."</td></tr>
+    <tr><td><strong>2. Task</strong></td><td>What you want, exactly</td><td>"Write 5 Instagram captions."</td></tr>
+    <tr><td><strong>3. Context</strong></td><td>Background, brand, audience</td><td>"Brand voice is calm and premium. Audience is women 30–55."</td></tr>
+    <tr><td><strong>4. Format</strong></td><td>How the answer should look</td><td>"Each caption under 150 characters, with 5 hashtags."</td></tr>
+    <tr><td><strong>5. Examples</strong></td><td>A sample of what 'good' looks like</td><td>"Here's a caption we liked: […]"</td></tr>
+  </table>
+
+  <p>Here's the formula filled in. This is a real prompt you could use today:</p>
+  <div class="prompt"><span class="lbl">Example — full formula</span><button class="copybtn">Copy</button>You're a social media manager for a premium med spa.
+
+Write 5 Instagram captions promoting our <span class="fill">[Botox]</span> service.
+
+Context: Our brand voice is calm, confident, and premium — never hypey or salesy. Our audience is women aged 30–55 who care about looking natural. We never make medical promises or guarantees.
+
+Format: Each caption under 150 characters. End each with a soft call to action and 5 relevant hashtags.
+
+Here's a caption style we like: "Subtle. Natural. You, refreshed. Book your consult this week."</div>
+
+  <div class="note"><strong>If the answer isn't right, just keep talking.</strong> Real follow-ups that work: "Make #3 shorter." · "Less salesy." · "Give me 5 more like #2." · "Now write a version for Facebook." You never have to get the prompt perfect on the first try.</div>
+</section>
+
+<!-- ============ GOLDEN RULES ============ -->
+<section id="golden">
+  <h2 class="sec">10 golden rules of prompting <a href="#how" class="back">↑ top</a></h2>
+  <ol class="steps">
+    <li><strong>Be specific.</strong> "Write a caption" is weak. "Write a 120-character Instagram caption for our lip filler service, calm and premium tone" is strong.</li>
+    <li><strong>Give the brand voice every time</strong> (or work inside the right Project where it's saved). Claude can't read Peter's mind.</li>
+    <li><strong>Ask for options.</strong> "Give me 5 versions" beats one. Pick the best, then refine it.</li>
+    <li><strong>Show, don't just tell.</strong> Paste an example of a post/email you liked and say "match this style."</li>
+    <li><strong>One task per chat.</strong> Don't write captions and plan ads in the same conversation.</li>
+    <li><strong>Attach the source.</strong> Rewriting a doc? Upload it. Describing a product? Upload the photo.</li>
+    <li><strong>Tell it the format.</strong> Bullet list? Table? Under 150 characters? Email with subject line? Say so.</li>
+    <li><strong>Iterate, don't restart.</strong> Refine in the same chat with short follow-ups.</li>
+    <li><strong>Verify facts.</strong> Double-check names, prices, dates, links, medical claims before anything ships.</li>
+    <li><strong>When unsure, draft &amp; send to Peter.</strong> Drafting is free and safe. Publishing/sending needs a green light.</li>
+  </ol>
+</section>
+
+<!-- ============ BUSINESSES AT A GLANCE ============ -->
+<section id="businesses">
+  <h2 class="sec">The businesses at a glance <a href="#how" class="back">↑ top</a></h2>
+  <p class="lead">Six revenue projects. Spend most of your time on the first two — they make money fastest. The rest are secondary unless Peter says otherwise.</p>
+  <table>
+    <tr><th>Project</th><th>What it sells</th><th>Status</th><th>Your main job</th></tr>
+    <tr><td><strong>Creative Conquest</strong></td><td>Short-form video for med spas / aesthetic clinics ($1,750–$6,000/mo)</td><td><span class="pill live">Top priority</span></td><td>Produce videos + run outreach</td></tr>
+    <tr><td><strong>Sidebush Art</strong></td><td>Print-on-demand art (posters, apparel) via Etsy/Printify</td><td><span class="pill live">Live &amp; selling-ready</span></td><td>Make art, list products, run the page</td></tr>
+    <tr><td><strong>Med Spa Content Engine</strong></td><td>Done-for-you social content for med spas ($500–$900/mo)</td><td><span class="pill build">Offer ready</span></td><td>Produce monthly content batches</td></tr>
+    <tr><td><strong>AI Mastery (course)</strong></td><td>Self-paced AI course for non-technical people</td><td><span class="pill build">Pre-launch</span></td><td>Build lead magnet + email funnel traffic</td></tr>
+    <tr><td><strong>AI Mastery for Veterans</strong></td><td>Government-funded AI training (SDVOSB)</td><td><span class="pill slow">Long sales cycle</span></td><td>Admin / research support only</td></tr>
+    <tr><td><strong>Outbound / Lead-gen</strong></td><td>The engine that fills the agency pipeline</td><td><span class="pill build">Supports CC</span></td><td>Build &amp; clean prospect lists</td></tr>
+  </table>
+</section>
+
+<!-- ============ ROUTINE ============ -->
+<section id="routine">
+  <h2 class="sec">Your daily &amp; weekly routine <a href="#how" class="back">↑ top</a></h2>
+  <p class="lead">A simple rhythm so nothing slips. Adjust hours with Peter.</p>
+
+  <h3>Every workday (first 15 minutes)</h3>
+  <ol class="steps">
+    <li>Check email/messages from Peter for anything marked urgent or "approve."</li>
+    <li>Open your task list (Peter will tell you where it lives — a doc, Notion, or a CRM).</li>
+    <li>Ask Claude to help you plan the day. Use this prompt:</li>
+  </ol>
+  <div class="prompt"><span class="lbl">Daily plan</span><button class="copybtn">Copy</button>Here are my open tasks for today across our projects:
+<span class="fill">[paste your task list]</span>
+
+Act as my operations assistant. Group these by project, tell me the order to do them in for the best impact, and flag anything that looks like it needs Peter's approval before I can finish it. Keep it short.</div>
+
+  <h3>Daily production targets (when assigned)</h3>
+  <ul class="tight">
+    <li><strong>Creative Conquest:</strong> help move 1–2 videos through the pipeline.</li>
+    <li><strong>Sidebush:</strong> generate art + write listings for 2–3 new cities/products.</li>
+    <li><strong>Social:</strong> draft the day's posts/captions for whichever pages are active.</li>
+  </ul>
+
+  <h3>Weekly (Friday)</h3>
+  <ol class="steps">
+    <li>Send Peter a short recap: what got done, what's pending approval, what's blocked.</li>
+    <li>Use the recap prompt in the <a href="#library">Prompt Library</a>.</li>
+  </ol>
+</section>
+
+<!-- ============ CREATIVE CONQUEST ============ -->
+<section id="cc">
+  <h2 class="sec">Project: Creative Conquest <span class="pill live">Top priority</span> <a href="#how" class="back">↑ top</a></h2>
+  <p class="lead">A short-form video agency for aesthetic medicine — med spas, dermatology, plastic surgery. Owned by Creative Conquest LLC (a veteran-owned business). Packages: <strong>Pilot $1,750/mo · Engine $3,500/mo · Dominance $6,000/mo</strong>. This is the highest-profit project, and there's already an operating system built for a VA to run it.</p>
+
+  <h3>Your two jobs here</h3>
+  <p><strong>Job A — Video production.</strong> Move educational/UGC-style videos through the pipeline. <br>
+  <strong>Job B — Outreach support.</strong> Help fill the pipeline with prospects and drafted messages.</p>
+
+  <h4>Job A — The video pipeline (in order)</h4>
+  <p>Each video flows through these stages. Some are software steps Peter will show you; your value is the <em>script, the captions, and quality-checking</em>.</p>
+  <ol class="steps">
+    <li><strong>Script</strong> — write a 20–40 second educational script about one procedure.</li>
+    <li><strong>Visual</strong> — generated in Higgsfield (Peter's tool).</li>
+    <li><strong>Voiceover</strong> — generated in ElevenLabs from the script.</li>
+    <li><strong>Lip-sync</strong> — done in SyncLabs.</li>
+    <li><strong>Edit + captions</strong> — assembled in CapCut using the saved template.</li>
+    <li><strong>Post</strong> — to the anchor Instagram account, then log the start metrics.</li>
+  </ol>
+
+  <p>Use Claude for the script — the part that makes or breaks the video:</p>
+  <div class="prompt"><span class="lbl">Video script</span><button class="copybtn">Copy</button>You're a short-form video scriptwriter for an aesthetic-medicine content agency. Brand voice: disciplined, plain-spoken, educational — no hype, no medical guarantees.
+
+Write a 30-second vertical video script that educates viewers about <span class="fill">[procedure, e.g. Morpheus8]</span>. Goal: build trust and curiosity so a viewer books a consult.
+
+Format:
+- A scroll-stopping first line (a hook) in the first 2 seconds
+- 3–4 short spoken lines (conversational, ~55 words total)
+- A soft call to action at the end
+- Then list 5 on-screen text overlays and 5 caption hashtags separately
+
+Avoid: "guaranteed," "best," before/after promises, or anything a clinic couldn't legally claim.</div>
+
+  <div class="warn"><strong>Compliance — read this</strong>Aesthetic/medical content is regulated. Never write guarantees, "cures," specific result promises, or use a real patient's before/after without explicit permission. When unsure, soften the claim and flag it for Peter.</div>
+
+  <h4>Job B — Outreach support</h4>
+  <p>The agency targets aesthetic-medicine practices with a <strong>7-day free pilot</strong> offer, then a 5-touch email sequence. You help by (1) building/cleaning prospect lists and (2) drafting personalized message copy. <strong>You draft — Peter sends.</strong></p>
+
+  <p>Personalize an outreach email with Claude:</p>
+  <div class="prompt"><span class="lbl">Outreach email</span><button class="copybtn">Copy</button>You're writing B2B outreach for Creative Conquest, a short-form video agency for aesthetic-medicine practices. Sender: Peter Anderson, Founder. Voice: disciplined, plain-spoken, no hype.
+
+Write a short cold email (Day 0, "soft, specific, no ask") to <span class="fill">[first name]</span>, who runs <span class="fill">[practice name]</span> in <span class="fill">[city]</span>. Their hero procedure is <span class="fill">[procedure]</span>. A personal detail to reference: <span class="fill">[recent post / press / before-after they shared]</span>.
+
+Rules:
+- Under 90 words
+- Lead with the personal detail, not us
+- Offer value, make no hard ask in this first email
+- 3 subject line options at the top
+- Plain text, no emojis</div>
+
+  <p>Build a clean prospect row from a messy source:</p>
+  <div class="prompt"><span class="lbl">Prospect cleanup</span><button class="copybtn">Copy</button>Here's raw info I copied about a med spa:
+<span class="fill">[paste anything — website text, listing, etc.]</span>
+
+Pull this into a clean table with columns: Practice Name | City | Owner/Contact Name | Hero Procedure | One-line personalization hook | Website | Instagram. If a field is unknown, write "MISSING" so I can find it. Don't guess or invent details.</div>
+
+  <div class="note"><strong>Where the system lives:</strong> Peter's <span class="kbd">creative-conquest-ops</span> folder has the Client Onboarding Checklist, the Content Production Tracker, the Monthly ROI Report, and the four core SOPs (editing, scheduling, engagement/DMs, prospecting). Ask Peter to walk you through these once — they're built for you to run.</div>
+
+  <div class="ok"><strong>Before it goes live</strong>Scripts → Peter approves before production. Outreach emails → Peter sends (respect daily send limits; never bulk-send yourself). Posts → Peter approves the first few, then per the agreed schedule.</div>
+</section>
+
+<!-- ============ SIDEBUSH ============ -->
+<section id="sidebush">
+  <h2 class="sec">Project: Sidebush Art <span class="pill live">Live</span> <a href="#how" class="back">↑ top</a></h2>
+  <p class="lead">A print-on-demand art brand. Surreal, painterly fine-art cityscapes sold as posters and apparel through Etsy/Printify. The website is already live and 52 products are ready. Brand look: dark gallery aesthetic with gold accents. This is the fastest project for you to own end-to-end — no sales calls, just steady production and listing.</p>
+
+  <h3>Your tasks</h3>
+  <ul class="tight">
+    <li><strong>Generate art</strong> — new cityscapes, on-brand, one per city.</li>
+    <li><strong>Write listings</strong> — title, description, tags for each piece.</li>
+    <li><strong>Run the social page</strong> — captions and posts (see the Facebook section next).</li>
+    <li><strong>Light customer service</strong> — drafting replies to buyer questions (Peter approves).</li>
+  </ul>
+
+  <h4>Step 1 — Generate a cityscape</h4>
+  <p>Peter uses Gemini for image generation with a specific brand prompt. Use Claude to <em>perfect the prompt and pick the best output</em>. Here's the brand-correct image prompt — fill in the city and its landmark:</p>
+  <div class="prompt"><span class="lbl">Image prompt (paste into the image tool)</span><button class="copybtn">Copy</button>A surreal dreamlike oil painting of the <span class="fill">[CITY]</span> skyline at night/dusk, featuring <span class="fill">[LANDMARK]</span> clearly recognizable. Vivid saturated color, bright and high-contrast, visible impasto brushstrokes, expressive painterly sky, museum-quality fine-art muralist style, semi-realistic with clear detailed forms, balanced natural color (not overly red or orange), no text, no watermark, no logo. Vertical portrait, 9:16.</div>
+
+  <div class="warn"><strong>Image quality rules</strong>The landmark must be obviously recognizable — if the city isn't clear, regenerate. Bright, vibrant, high-contrast — if it looks dull or muddy, regenerate. <strong>No text, logos, or watermarks in the image.</strong> If one appears, regenerate or flag for Peter to crop.</div>
+
+  <h4>Step 2 — Save it correctly</h4>
+  <ol class="steps">
+    <li>Download the full-size image.</li>
+    <li>Name it lowercase with underscores: <span class="kbd">los_angeles.png</span>, <span class="kbd">denver.png</span>.</li>
+    <li>Save it to the shared folder Peter gives you. One image per city, portrait orientation.</li>
+  </ol>
+
+  <h4>Step 3 — Write the listing</h4>
+  <p>For each new city, you need a title, a description, and tags. Claude does this in one shot:</p>
+  <div class="prompt"><span class="lbl">Product listing</span><button class="copybtn">Copy</button>You're writing an Etsy/Printify listing for a fine-art print from the Sidebush Art brand. Brand vibe: premium, moody, gallery-quality, dark-and-gold. The piece is a vivid surreal oil-painting cityscape of <span class="fill">[CITY]</span> featuring <span class="fill">[LANDMARK]</span>.
+
+Give me:
+1. PRODUCT TITLE — short and evocative, format "{City}, {feature/mood}" (e.g. "Denver, Rocky Mountain Dusk")
+2. DESCRIPTION — 2 short paragraphs, premium tone, mentions it's gallery-quality wall art, great as a gift, available as poster and apparel. No fake claims.
+3. TAGS — 13 SEO keywords a buyer would search (city name, "skyline wall art", "surreal cityscape", etc.), comma-separated.</div>
+
+  <div class="note"><strong>Cities still to make</strong> (skip any already done): Los Angeles, San Diego, Las Vegas, Santa Fe, Denver, Boulder, Munich, Rome, Venice, Tokyo, London, New York, Istanbul, Barcelona, Amsterdam, University of Miami. Confirm the current list with Peter before starting so you don't redo finished ones.</div>
+
+  <div class="ok"><strong>Before it goes live</strong>New listings → Peter approves the first batch, then you can publish to the agreed template. Customer replies → draft, Peter sends until he tells you otherwise.</div>
+</section>
+
+<!-- ============ FACEBOOK ============ -->
+<section id="facebook">
+  <h2 class="sec">Project: The Facebook page &amp; ads <a href="#how" class="back">↑ top</a></h2>
+  <p class="lead">The page is new (built recently), so the near-term goal is <strong>growth and traffic</strong>, not "monetization." A brand-new page can't be monetized yet — that needs scale first (roughly 10,000 followers and an established posting history). Until then, the page's job is to drive people to our links and products.</p>
+
+  <h3>Your tasks</h3>
+  <ul class="tight">
+    <li>Post consistently (a mix of images, short video, and link posts).</li>
+    <li>Draft boosted-ad copy for Peter to approve and run.</li>
+    <li>Keep everything policy-safe: original art/photos only, no copyrighted music or images.</li>
+  </ul>
+
+  <h4>Why we boost ads (the short version)</h4>
+  <p>A new page reaches almost no one organically. Boosting puts posts in front of people who don't follow us yet — it buys reach <em>and</em> data about what works, cheaply. We boost to grow followers, drive traffic to product links, and learn which posts and products people respond to.</p>
+
+  <h4>Draft a week of posts</h4>
+  <div class="prompt"><span class="lbl">Weekly post batch</span><button class="copybtn">Copy</button>You're running the Facebook page for <span class="fill">[Sidebush Art — surreal cityscape wall art]</span>. Brand voice: premium, artful, warm.
+
+Draft 5 Facebook posts for this week. Mix: 2 showcasing a specific piece (<span class="fill">[city names]</span>), 1 behind-the-scenes about the art style, 1 question/engagement post, 1 link post driving to our shop.
+
+Format each as:
+- Post text (2–4 sentences, no more than 1 emoji)
+- A suggested image idea
+- A clear call to action
+Keep it scroll-friendly and never spammy.</div>
+
+  <h4>Draft copy for a boosted ad</h4>
+  <div class="prompt"><span class="lbl">Boost / ad copy</span><button class="copybtn">Copy</button>Write 3 versions of a Facebook ad to boost a post for <span class="fill">[Sidebush Art]</span>. Goal: <span class="fill">[get clicks to our shop / grow page followers]</span>. Audience: <span class="fill">[people who love travel, art, and home décor, US, 28–60]</span>.
+
+Each version:
+- A 1-line hook
+- 2 lines of body
+- 1 strong call to action
+- Keep it punchy and mobile-first
+Then suggest the single best audience-interest targeting for each version.</div>
+
+  <div class="warn"><strong>Money &amp; ad rules</strong>You may <em>draft</em> ad copy and suggest budgets/targeting, but <strong>do not actually launch a paid boost or spend money</strong> without Peter's explicit go-ahead each time. Start small (a few dollars/day) only when he approves.</div>
+
+  <div class="note"><strong>On "monetizing the page":</strong> We earn now by driving traffic to products — that doesn't depend on Facebook's monetization program. Facebook's own payout features (in-stream ads, etc.) unlock later once we have the followers and watch-time history. The path there is: post consistently (especially video), boost the best posts to grow followers, stay policy-compliant, and connect a payout method. Don't promise Peter monetization is "switched on" early — it's a milestone we build toward.</div>
+</section>
+
+<!-- ============ MED SPA ============ -->
+<section id="medspa">
+  <h2 class="sec">Project: Med Spa Content Engine <span class="pill build">Offer ready</span> <a href="#how" class="back">↑ top</a></h2>
+  <p class="lead">A done-for-you social content service for med spas: they post, get booked, and don't lift a finger. Packages: <strong>Starter $500/mo (12 posts) · Growth $900/mo (30 posts incl. 4 reels) — lead with Growth · Setup add-on $750</strong>. First 7 posts are offered free so the client sees quality before paying. This is closely related to Creative Conquest and the same skills apply.</p>
+
+  <h3>Your task — produce the monthly content batch</h3>
+  <p>Each post = a branded image + a caption written to <em>book appointments</em> (not just look pretty) + hashtags + a suggested post time. Use Claude to produce the captions and calendar; images are templated/generated to the client's colors.</p>
+
+  <div class="prompt"><span class="lbl">Monthly content batch</span><button class="copybtn">Copy</button>You're a content strategist for med spas. Create part of a monthly content calendar for <span class="fill">[spa name]</span>, whose hero services are <span class="fill">[Botox, filler, facials]</span>. Brand voice: <span class="fill">[calm, premium, trustworthy]</span>.
+
+Give me 10 ready-to-post pieces. For each:
+- Type (educational / before-the-objection / promo / testimonial-style / engagement)
+- Caption (written to book appointments, under 150 characters)
+- 5 hashtags
+- Suggested post day + time
+- A one-line image direction
+
+Rules: no medical guarantees, no specific result promises, FTC-safe. Spread types across the 10 so it's not repetitive.</div>
+
+  <div class="ok"><strong>Before it goes live</strong>The client approves their batch; internally, Peter approves before the batch goes to the client. You schedule only after both yeses.</div>
+</section>
+
+<!-- ============ AI MASTERY ============ -->
+<section id="aimastery">
+  <h2 class="sec">Project: AI Mastery course <span class="pill build">Pre-launch</span> <a href="#how" class="back">↑ top</a></h2>
+  <p class="lead">A self-paced course — "AI Mastery: From Slop to Shipped" — that takes a non-technical person from generic AI use to actually publishing on-brand content and shipping projects. The product and curriculum exist; the job now is building the <strong>top of the funnel</strong>: a free lead magnet, a landing page, and an email sequence that turns visitors into buyers.</p>
+
+  <h3>Your tasks (support the launch funnel)</h3>
+  <ul class="tight">
+    <li>Help polish the free lead-magnet PDF copy.</li>
+    <li>Draft social posts that drive cold traffic to the landing page.</li>
+    <li>Draft/refine the welcome email sequence.</li>
+  </ul>
+
+  <h4>Draft launch/traffic posts</h4>
+  <div class="prompt"><span class="lbl">Course traffic posts</span><button class="copybtn">Copy</button>You're marketing a self-paced course called "AI Mastery: From Slop to Shipped" — it teaches non-technical people to stop sounding generic with AI and actually ship content and projects. Audience: operators, solopreneurs, small-business owners curious about AI.
+
+Write 5 social posts (LinkedIn + X style) that each:
+- Open with a pain point the audience feels ("Your AI writing sounds like everyone else's…")
+- Give one genuinely useful tip
+- End with a soft CTA to grab our free starter PDF
+No hype, no "10x your life." Smart and practical.</div>
+
+  <h4>Draft a welcome email</h4>
+  <div class="prompt"><span class="lbl">Nurture email</span><button class="copybtn">Copy</button>Write email <span class="fill">[1 of 5]</span> in a welcome sequence for people who downloaded our free "AI Mastery" starter PDF. Goal of this email: <span class="fill">[deliver the PDF + set expectations]</span>. Voice: helpful peer, plain-spoken, zero hype.
+
+Format: subject line + preview text + 120–180 word body + one clear CTA. End with a P.S. that teases the next email.</div>
+
+  <div class="note"><strong>Source material exists:</strong> the <span class="kbd">ai-mastery-course/launch-package</span> folder already has a lead magnet, landing page, email sequence, pricing, and sales assets. Your job is to refine and distribute, not start from scratch. Ask Peter for the current pieces before drafting new ones.</div>
+</section>
+
+<!-- ============ VETERANS ============ -->
+<section id="veterans">
+  <h2 class="sec">Project: AI Mastery for Veterans <span class="pill slow">Long cycle</span> <a href="#how" class="back">↑ top</a></h2>
+  <p class="lead">A version of the AI course packaged for <strong>government funding</strong> — sold to/for veterans through programs like VET TEC, VR&amp;E, GI Bill, and SkillBridge, under Creative Conquest's veteran-owned (SDVOSB) status. This is potentially the biggest ticket but has a <strong>long, paperwork-heavy sales cycle</strong>. Don't expect fast money here. Your role is admin and research support only.</p>
+
+  <h3>Your tasks</h3>
+  <ul class="tight">
+    <li>Research and summarize funding pathways and procurement steps.</li>
+    <li>Help draft capability-statement and one-pager copy (Peter finalizes).</li>
+    <li>Track deadlines and required registrations.</li>
+  </ul>
+
+  <div class="prompt"><span class="lbl">Research summary</span><button class="copybtn">Copy</button>Summarize, in plain language, how <span class="fill">[VET TEC / VR&E / SkillBridge]</span> funding works for a veteran wanting to take an approved AI-training course. Cover: who's eligible, who pays, how a training provider gets approved/listed, and the typical steps and timeline.
+
+Format as a short brief with a "what we'd need to do next" checklist at the end. Flag anything I should verify on an official .gov source rather than take as final.</div>
+
+  <div class="warn"><strong>Accuracy matters here</strong>Government rules change and details vary. Anything Claude says about eligibility, money, or procurement must be verified against official <span class="kbd">.gov</span> sources before it's acted on. Treat Claude's output as a starting draft, never the final word.</div>
+
+  <div class="note"><strong>Known blocker:</strong> the business's government registration (SAM.gov) currently lists it under social-media-marketing only and needs the training codes added before it surfaces for training contracts. That's Peter's to-do — just be aware it gates this project.</div>
+</section>
+
+<!-- ============ OUTBOUND ============ -->
+<section id="outbound">
+  <h2 class="sec">Project: Outbound / lead-gen <span class="pill build">Engine</span> <a href="#how" class="back">↑ top</a></h2>
+  <p class="lead">This isn't a product — it's the machine that fills the Creative Conquest and Med Spa pipelines. It finds the right practices, loads them into the CRM (HubSpot), and feeds the email + LinkedIn sequences. Peter has tooling for the heavy lifting; your value is <strong>list-building, research, and message drafting</strong>.</p>
+
+  <h3>Your tasks</h3>
+  <ul class="tight">
+    <li>Build target lists of aesthetic-medicine practices (name, city, contact, hero procedure, personalization hook).</li>
+    <li>Clean and de-duplicate lists before they enter the CRM.</li>
+    <li>Draft personalization hooks and sequence copy.</li>
+  </ul>
+
+  <div class="prompt"><span class="lbl">Find personalization hooks</span><button class="copybtn">Copy</button>I'm researching med spas to reach out to. Here's info on one:
+<span class="fill">[paste their website "about" text or a recent post]</span>
+
+Write one specific, genuine personalization hook (one sentence) I could open a cold email with — something that proves we actually looked at them, not generic flattery. Then suggest their likely hero procedure to feature. If there isn't enough to personalize, say "NOT ENOUGH INFO" instead of inventing something.</div>
+
+  <div class="prompt"><span class="lbl">De-dupe &amp; clean a list</span><button class="copybtn">Copy</button>Here's a list of prospects I gathered (may have duplicates and messy formatting):
+<span class="fill">[paste the list]</span>
+
+Clean it into one table: Practice Name | City | Contact Name | Email | Instagram | Hero Procedure | Hook. Remove duplicates (same practice or same email). Flag rows missing an email as "NEEDS EMAIL." Don't invent any data.</div>
+
+  <div class="warn"><strong>Sending rules</strong>Respect the daily limits Peter sets (e.g. ~50 emails/day, ≤25 LinkedIn connects/day) and only send from the approved accounts/tools. Over-sending gets accounts blocked. When in doubt, prepare the batch and let Peter send.</div>
+</section>
+
+<!-- ============ PROMPT LIBRARY ============ -->
+<section id="library">
+  <h2 class="sec">Prompt library — quick copy <a href="#how" class="back">↑ top</a></h2>
+  <p class="lead">Your most-used prompts in one place. Copy, fill the <span class="fill">[brackets]</span>, paste into Claude.</p>
+
+  <h4>Repurpose one piece of content into many</h4>
+  <div class="prompt"><span class="lbl">Repurpose</span><button class="copybtn">Copy</button>Here's a piece of content:
+<span class="fill">[paste a script, post, or product description]</span>
+
+Repurpose it into: 1 Instagram caption, 1 Facebook post, 1 LinkedIn post, and 3 short hooks I could use as video openers. Keep the core message but match each platform's style. Keep our brand voice: <span class="fill">[describe voice]</span>.</div>
+
+  <h4>Turn a photo into a product caption</h4>
+  <div class="prompt"><span class="lbl">Photo → caption</span><button class="copybtn">Copy</button>[Attach the product image, then paste this.] Look at this image. Write a premium, on-brand caption to sell it for <span class="fill">[brand]</span>. Under 150 characters, one soft CTA, 5 hashtags. Describe what you see accurately — don't claim features that aren't visible.</div>
+
+  <h4>Reply to a customer question</h4>
+  <div class="prompt"><span class="lbl">Customer reply</span><button class="copybtn">Copy</button>A customer for <span class="fill">[brand]</span> wrote: "<span class="fill">[paste their message]</span>". Draft a warm, helpful reply. Tone: friendly and professional. If I need a fact I haven't given you (price, shipping time, etc.), leave a clearly marked <span class="fill">[BLANK]</span> for me to fill in rather than guessing.</div>
+
+  <h4>Friday recap for Peter</h4>
+  <div class="prompt"><span class="lbl">Weekly recap</span><button class="copybtn">Copy</button>Turn my rough notes into a tidy weekly update for my boss. Notes:
+<span class="fill">[paste what you did this week]</span>
+
+Format with three short sections: ✅ Done · ⏳ Waiting on approval · 🚧 Blocked / need from you. Bullet points, plain and scannable. Add a one-line summary at the top.</div>
+
+  <h4>"Explain it to me" — when you're stuck</h4>
+  <div class="prompt"><span class="lbl">Learn anything</span><button class="copybtn">Copy</button>Explain <span class="fill">[the thing you're confused about, e.g. "how to upload a product to Printify"]</span> to me like I'm new to it. Give me clear numbered steps, tell me what each one does, and warn me about the 2–3 mistakes beginners make. Keep it simple.</div>
+</section>
+
+<!-- ============ GUARDRAILS ============ -->
+<section id="guardrails">
+  <h2 class="sec">Guardrails — when to stop &amp; ask <a href="#how" class="back">↑ top</a></h2>
+  <p class="lead">Drafting is always safe. These are the moments to pause and get Peter's yes <em>before</em> acting.</p>
+  <table>
+    <tr><th>Always OK on your own</th><th>Stop &amp; get Peter's approval first</th></tr>
+    <tr><td>Drafting scripts, captions, emails, listings</td><td>Spending any money (ads, boosts, subscriptions)</td></tr>
+    <tr><td>Generating art / images</td><td>Publishing content publicly for the first time on a channel</td></tr>
+    <tr><td>Building &amp; cleaning prospect lists</td><td>Sending outreach emails or DMs at volume</td></tr>
+    <tr><td>Researching &amp; summarizing</td><td>Replying to a customer with prices, refunds, or commitments</td></tr>
+    <tr><td>Organizing files &amp; trackers</td><td>Anything involving medical/legal/government claims</td></tr>
+    <tr><td>Asking Claude to plan your day</td><td>Changing live websites, domains, or accounts</td></tr>
+  </table>
+
+  <div class="warn"><strong>Five things to never let Claude talk you into shipping unchecked</strong>
+    <ul class="tight" style="margin-top:6px">
+      <li>Medical promises or guarantees (Creative Conquest / Med Spa).</li>
+      <li>Government/funding facts (Veterans) without a <span class="kbd">.gov</span> check.</li>
+      <li>Prices, dates, links, or names — always verify, Claude can get these wrong.</li>
+      <li>Copyrighted music, images, or brand logos in posts or ads.</li>
+      <li>Anything that spends money or hits "publish/send" — that's Peter's call.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ GLOSSARY ============ -->
+<section id="glossary">
+  <h2 class="sec">Glossary <a href="#how" class="back">↑ top</a></h2>
+  <table>
+    <tr><th>Term</th><th>Plain meaning</th></tr>
+    <tr><td>Prompt</td><td>The instruction you type to Claude.</td></tr>
+    <tr><td>Project (in Claude)</td><td>A folder of chats that share saved background info about one business.</td></tr>
+    <tr><td>POD (print-on-demand)</td><td>Products (posters, shirts) printed only when someone orders — no inventory. That's Sidebush.</td></tr>
+    <tr><td>Boost / ad</td><td>Paying Facebook to show a post to more people.</td></tr>
+    <tr><td>Monetization</td><td>Facebook paying <em>us</em> for content — a later milestone needing big follower counts.</td></tr>
+    <tr><td>Lead magnet</td><td>A free thing (like a PDF) you give away to collect emails.</td></tr>
+    <tr><td>Funnel</td><td>The path from stranger → email subscriber → buyer.</td></tr>
+    <tr><td>CRM (HubSpot)</td><td>The database where prospects and deals are tracked.</td></tr>
+    <tr><td>Sequence</td><td>A planned series of outreach emails sent over several days.</td></tr>
+    <tr><td>SDVOSB</td><td>Service-Disabled Veteran-Owned Small Business — a status that unlocks certain government contracts.</td></tr>
+    <tr><td>Anchor account</td><td>The one main social account we post to first and build around.</td></tr>
+  </table>
+</section>
+
+<footer>
+  VA Operations Manual · v1.0 · Internal use for Peter Anderson's businesses.<br>
+  When in doubt: draft it in Claude, then send it to Peter before it goes live.
+</footer>
+
+</div>
+
+<script>
+  document.querySelectorAll('.copybtn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var box=btn.closest('.prompt');
+      var text=box.cloneNode(true);
+      text.querySelectorAll('.lbl,.copybtn').forEach(function(e){e.remove();});
+      var t=text.innerText.trim();
+      navigator.clipboard.writeText(t).then(function(){
+        btn.textContent='Copied ✓';btn.classList.add('done');
+        setTimeout(function(){btn.textContent='Copy';btn.classList.remove('done');},1600);
+      });
+    });
+  });
+</script>
+</body>
+</html>
